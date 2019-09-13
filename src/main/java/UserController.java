@@ -73,6 +73,7 @@ public class UserController {
                 System.out.print("Postcode: " + postcode + ", ");
                 System.out.print("First Name: " + firstName + ", ");
                 System.out.print("Surname: " + surname + ", ");
+                System.out.println(" ");
             }
 
         } catch (Exception exception) {

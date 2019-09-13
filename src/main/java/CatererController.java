@@ -64,6 +64,7 @@ public class CatererController {
                 System.out.print("Caterer Name: " + catererName + ", ");
                 System.out.print("Type: " + foodType + ", ");
                 System.out.print("Price/head: " + priceHead);
+                System.out.println(" ");
             }
 
         } catch (Exception exception) {

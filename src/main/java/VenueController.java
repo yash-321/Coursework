@@ -54,7 +54,7 @@ public class VenueController {
         }
     }
 
-    public static void listUser() {
+    public static void listVenue() {
 
         try {
 
@@ -76,6 +76,7 @@ public class VenueController {
                 System.out.print(postcode + ", ");
                 System.out.print("Capacity: " + capacity + ", ");
                 System.out.print("price/hour: " + priceHr + ", ");
+                System.out.println(" ");
             }
 
         } catch (Exception exception) {

@@ -64,6 +64,7 @@ public class EntertainmentController {
                 System.out.print("Entertainer Name: " + entertainerName + ", ");
                 System.out.print("Description: " + description + ", ");
                 System.out.print("Price/hour: " + priceHr);
+                System.out.println(" ");
             }
 
         } catch (Exception exception) {

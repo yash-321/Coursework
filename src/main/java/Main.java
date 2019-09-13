@@ -8,6 +8,10 @@ public class Main {
     public static void main(String[] args) {
         openDatabase("Users.db");
 // code to get data from, write to the database etc goes here!
+        VenueController.listVenue();
+        CatererController.listCaterer();
+        EntertainmentController.listEntertainer();
+        UserController.listUser();
         closeDatabase();
     }
 
