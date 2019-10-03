@@ -1,8 +1,10 @@
+import Controllers.AdminController;
+import Controllers.UserController;
 import org.sqlite.SQLiteConfig;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-public class Main {
+public class OldMain {
     public static Connection db = null;
 
     public static void main(String[] args) {

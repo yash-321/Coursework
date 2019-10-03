@@ -1,6 +1,16 @@
+package Controllers;
+
+import Server.Main;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
+@Path("venue/")
 public class VenueController {
 
     public static void insertVenue(String venueName, String address, String city, String postcode, int capacity, float priceHr){
@@ -54,33 +64,31 @@ public class VenueController {
         }
     }
 
-    public static void listVenue() {
-
+    @GET
+    @Path("list")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String listVenue() {
+        System.out.println("venue/list");
+        JSONArray list = new JSONArray();
         try {
-
             PreparedStatement ps = Main.db.prepareStatement("SELECT VenueID, VenueName, Address, City, Postcode, Capacity, PriceHr FROM Venues");
 
             ResultSet results = ps.executeQuery();
             while (results.next()) {
-                int venueID = results.getInt(1);
-                String venueName = results.getString(2);
-                String address = results.getString(3);
-                String city = results.getString(4);
-                String postcode = results.getString(5);
-                int capacity = results.getInt(6);
-                Float priceHr = results.getFloat(7);
-                System.out.print("VenueID: " + venueID + ", ");
-                System.out.print("Venue Name: " + venueName + ", ");
-                System.out.print("Address: " + address + ", ");
-                System.out.print(city + ", ");
-                System.out.print(postcode + ", ");
-                System.out.print("Capacity: " + capacity + ", ");
-                System.out.print("price/hour: " + priceHr + ", ");
-                System.out.println(" ");
+                JSONObject item = new JSONObject();
+                item.put("id", results.getInt(1));
+                item.put("name", results.getString(2));
+                item.put("address", results.getString(3));
+                item.put("city", results.getString(4));
+                item.put("postcode", results.getString(5));
+                item.put("capacity", results.getInt(6));
+                item.put("price/hr", results.getFloat(7));
+                list.add(item);
             }
-
+            return list.toString();
         } catch (Exception exception) {
             System.out.println("Database error: " + exception.getMessage());
+            return "{\"error\": \"Unable to list items, please see server console for more info.\"}";
         }
     }
 }
