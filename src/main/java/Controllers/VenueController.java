@@ -1,12 +1,11 @@
 package Controllers;
 
 import Server.Main;
+import com.sun.jersey.multipart.FormDataParam;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,15 +32,26 @@ public class VenueController {
 
     }
 
-    public static void deleteVenue(int venueID) {
+    @POST
+    @Path("delete")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String deleteVenue(@FormDataParam("venueID") Integer venueID) {
+
         try{
+            if (venueID == null) {
+                throw new Exception("One or more form data parameters are missing in the HTTP request.");
+            }
+            System.out.println("venue/delete venueID=" + venueID);
 
             PreparedStatement ps = Main.db.prepareStatement("DELETE FROM Venue WHERE VenueID = ?");
             ps.setInt(1, venueID);
             ps.executeUpdate();
+            return "{\"status\": \"OK\"}";
 
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        } catch (Exception exception) {
+            System.out.println("Database error: " + exception.getMessage());
+            return "{\"error\": \"Unable to delete item, please see server console for more info.\"}";
         }
     }
 
