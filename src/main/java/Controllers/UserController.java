@@ -1,11 +1,64 @@
 package Controllers;
 
 import Server.Main;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.UUID;
 
+@Path("user")
 public class UserController {
+
+    @POST
+    @Path("login")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String loginUser(@FormDataParam("email") String email, @FormDataParam("password") String password){
+        try {
+            if (email == null || password == null){
+                throw new Exception("One or more form data parameters are missing in the HTTP request.");
+            }
+            System.out.println("/user/login - Attempt by " + email);
+
+            PreparedStatement statement1 = Main.db.prepareStatement(
+                    "SELECT Email, Password, SessionToken FROM Users WHERE Email = ?"
+            );
+            statement1.setString(1, email.toLowerCase());
+            ResultSet results = statement1.executeQuery();
+
+            if (results != null && results.next()) {
+                if (!password.equals(results.getString("Password"))) {
+                    return "{\"error\": \"Incorrect password\"}";
+                }
+
+                String token = UUID.randomUUID().toString();
+                PreparedStatement statement2 = Main.db.prepareStatement(
+                        "UPDATE Users SET SessionToken = ? WHERE LOWER(Email) = ?"
+                );
+                statement2.setString(1, token);
+                statement2.setString(2, email.toLowerCase());
+                statement2.executeUpdate();
+                return "{\"token\": \"" + token + "\"}";
+
+            } else {
+                return "{\"error\": \"Can't find user account.\"}";
+            }
+
+
+        } catch (Exception exception){
+            System.out.println("Database error: " + exception.getMessage());
+            return "{\"error\": \"Unable to update item, please see server console for more info.\"}";
+        }
+    }
+
+
+
 
 
     public static void insertUser(String email, String password, String postcode, String firstName, String surname){
@@ -27,11 +80,11 @@ public class UserController {
 
     }
 
-    public static void deleteUser(int userID) {
+    public static void deleteUser(String email) {
         try{
 
-            PreparedStatement ps = Main.db.prepareStatement("DELETE FROM Users WHERE UserID = ?");
-            ps.setInt(1, userID);
+            PreparedStatement ps = Main.db.prepareStatement("DELETE FROM Users WHERE email = ?");
+            ps.setString(1, email);
             ps.executeUpdate();
 
         } catch (Exception e) {
@@ -42,7 +95,7 @@ public class UserController {
     public static void updateUser(String email, String password, String postcode, String firstName, String surname) {
 
         try {
-            PreparedStatement ps = Main.db.prepareStatement("UPDATE Users SET Email = ?, Password = ?, Postcode = ?, FirstName = ?, Surname = ? WHERE UserID = ?");
+            PreparedStatement ps = Main.db.prepareStatement("UPDATE Users SET Email = ?, Password = ?, Postcode = ?, FirstName = ?, Surname = ? WHERE Email = ?");
 
             ps.setString(1,email);
             ps.setString(2,password);
@@ -61,17 +114,15 @@ public class UserController {
 
         try {
 
-            PreparedStatement ps = Main.db.prepareStatement("SELECT UserID, Email, Password, Postcode, FirstName, Surname FROM Users");
+            PreparedStatement ps = Main.db.prepareStatement("SELECT Email, Password, Postcode, FirstName, Surname FROM Users");
 
             ResultSet results = ps.executeQuery();
             while (results.next()) {
-                int userID = results.getInt(1);
-                String email = results.getString(2);
-                String password = results.getString(3);
-                String postcode = results.getString(4);
-                String firstName = results.getString(5);
-                String surname = results.getString(6);
-                System.out.print("UserID: " + userID + ", ");
+                String email = results.getString(1);
+                String password = results.getString(2);
+                String postcode = results.getString(3);
+                String firstName = results.getString(4);
+                String surname = results.getString(5);
                 System.out.print("Email: " + email + ", ");
                 System.out.print("Password: " + password + ", ");
                 System.out.print("Postcode: " + postcode + ", ");
