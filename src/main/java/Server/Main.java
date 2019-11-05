@@ -13,7 +13,7 @@ import java.sql.DriverManager;
 
 public class Main {
     public static void main(String[] args) {
-
+        // Database opened
         openDatabase("users.db");
 
         ResourceConfig config = new ResourceConfig();
@@ -21,10 +21,12 @@ public class Main {
         config.register(MultiPartFeature.class);
         ServletHolder servlet = new ServletHolder(new ServletContainer(config));
 
+        // Creation of the server
         Server server = new Server(8081);
         ServletContextHandler context = new ServletContextHandler(server, "/");
         context.addServlet(servlet, "/*");
 
+        // Server opened in try catch to stop error crashing program
         try {
             server.start();
             System.out.println("Server successfully started.");
@@ -34,6 +36,7 @@ public class Main {
         }
     }
 
+    // database opening procedure
     public static Connection db = null;
     private static void openDatabase(String dbFile) {
         try  {
@@ -47,7 +50,4 @@ public class Main {
         }
 
     }
-
-
-
 }

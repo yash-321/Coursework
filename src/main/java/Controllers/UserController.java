@@ -19,16 +19,14 @@ public class UserController {
     @Path("login")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public String loginUser(@FormDataParam("email") String email, @FormDataParam("password") String password){
+    public String loginUser(@FormDataParam("email") String email, @FormDataParam("password") String password) {
         try {
-            if (email == null || password == null){
+            if (email == null || password == null) {
                 throw new Exception("One or more form data parameters are missing in the HTTP request.");
             }
             System.out.println("/user/login - Attempt by " + email);
 
-            PreparedStatement statement1 = Main.db.prepareStatement(
-                    "SELECT Email, Password, SessionToken FROM Users WHERE Email = ?"
-            );
+            PreparedStatement statement1 = Main.db.prepareStatement("SELECT Email, Password, SessionToken FROM Users WHERE Email = ?");
             statement1.setString(1, email.toLowerCase());
             ResultSet results = statement1.executeQuery();
 
@@ -51,20 +49,30 @@ public class UserController {
             }
 
 
-        } catch (Exception exception){
+        } catch (Exception exception) {
             System.out.println("Database error: " + exception.getMessage());
             return "{\"error\": \"Unable to update item, please see server console for more info.\"}";
         }
     }
 
 
-
-
-
-    public static void insertUser(String email, String password, String postcode, String firstName, String surname){
+    @POST
+    @Path("new")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String insertUser(
+            @FormDataParam("email") String email, @FormDataParam("password") String password,
+            @FormDataParam("postcode") String postcode, @FormDataParam("firstname") String firstName,
+            @FormDataParam("surname") String surname) {
 
         try {
-            PreparedStatement ps = Main.db.prepareStatement("INSERT INTO Users(Email, Password, Postcode, FirstName, Surname) VALUES (?, ?, ?, ?, ?)");
+            if (email == null || password == null || postcode == null || firstName == null || surname == null) {
+                throw new Exception("One or more form data parameters are missing in the HTTP request.");
+            }
+            System.out.println("user/new email=" + email);
+
+            PreparedStatement ps = Main.db.prepareStatement(
+                    "INSERT INTO Users(Email, Password, Postcode, FirstName, Surname) VALUES (?, ?, ?, ?, ?)");
 
             ps.setString(1, email);
             ps.setString(2, password);
@@ -72,68 +80,64 @@ public class UserController {
             ps.setString(4, firstName);
             ps.setString(5, surname);
             ps.executeUpdate();
-            System.out.println("Record added to Users table");
+            return "{\"status\": \"OK\"}";
 
         } catch (Exception exception) {
             System.out.println("Database error: " + exception.getMessage());
+            return "{\"error\": \"Unable to create new item, please see server console for more info.\"}";
         }
-
     }
 
-    public static void deleteUser(String email) {
-        try{
+    @POST
+    @Path("delete")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String deleteUser(@FormDataParam("email") String email) {
+
+        try {
+            if (email == null) {
+                throw new Exception("Email is missing from HTTP request.");
+            }
+            System.out.println("user/delete email=" + email);
 
             PreparedStatement ps = Main.db.prepareStatement("DELETE FROM Users WHERE email = ?");
             ps.setString(1, email);
             ps.executeUpdate();
+            return "{\"status\": \"OK\"}";
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Database error: " + e.getMessage());
+            return "{\"error\": \"Unable to delete item, please see server console for more info.\"}";
         }
     }
 
-    public static void updateUser(String email, String password, String postcode, String firstName, String surname) {
+    @POST
+    @Path("update")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String updateUser(@FormDataParam("email") String email, @FormDataParam("password") String password,
+                             @FormDataParam("postcode") String postcode, @FormDataParam("firstname") String firstName,
+                             @FormDataParam("surname") String surname) {
 
         try {
+            if (email == null || password == null || postcode == null || firstName == null || surname == null) {
+                throw new Exception("One or more form data parameters are missing in the HTTP request.");
+            }
+            System.out.println("user/update email=" + email);
+
             PreparedStatement ps = Main.db.prepareStatement("UPDATE Users SET Email = ?, Password = ?, Postcode = ?, FirstName = ?, Surname = ? WHERE Email = ?");
 
-            ps.setString(1,email);
-            ps.setString(2,password);
-            ps.setString(3,postcode);
-            ps.setString(4,firstName);
-            ps.setString(5,surname);
-
+            ps.setString(1, email);
+            ps.setString(2, password);
+            ps.setString(3, postcode);
+            ps.setString(4, firstName);
+            ps.setString(5, surname);
             ps.execute();
+            return "{\"status\": \"OK\"}";
 
         } catch (Exception exception) {
             System.out.println("Database error: " + exception.getMessage());
+            return "{\"error\": \"Unable to update item, please see server console for more info.\"}";
         }
     }
-
-    public static void listUser() {
-
-        try {
-
-            PreparedStatement ps = Main.db.prepareStatement("SELECT Email, Password, Postcode, FirstName, Surname FROM Users");
-
-            ResultSet results = ps.executeQuery();
-            while (results.next()) {
-                String email = results.getString(1);
-                String password = results.getString(2);
-                String postcode = results.getString(3);
-                String firstName = results.getString(4);
-                String surname = results.getString(5);
-                System.out.print("Email: " + email + ", ");
-                System.out.print("Password: " + password + ", ");
-                System.out.print("Postcode: " + postcode + ", ");
-                System.out.print("First Name: " + firstName + ", ");
-                System.out.print("Surname: " + surname);
-                System.out.println(" ");
-            }
-
-        } catch (Exception exception) {
-            System.out.println("Database error: " + exception.getMessage());
-        }
-    }
-
 }
