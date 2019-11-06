@@ -12,7 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.UUID;
 
-@Path("user")
+@Path("user/")
 public class UserController {
 
     @POST
@@ -57,7 +57,7 @@ public class UserController {
 
 
     @POST
-    @Path("new")
+    @Path("insert")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public String insertUser(
@@ -66,7 +66,7 @@ public class UserController {
             @FormDataParam("surname") String surname) {
 
         try {
-            if (email == null || password == null || postcode == null || firstName == null || surname == null) {
+            if (email == null || password == null || firstName == null || surname == null) {
                 throw new Exception("One or more form data parameters are missing in the HTTP request.");
             }
             System.out.println("user/new email=" + email);

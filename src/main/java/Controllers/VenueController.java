@@ -115,7 +115,6 @@ public class VenueController {
             ps.setInt(5,capacity);
             ps.setFloat(6,priceHr);
             ps.setInt(7,venueID);
-
             ps.execute();
             return "{\"status\": \"OK\"}";
 
