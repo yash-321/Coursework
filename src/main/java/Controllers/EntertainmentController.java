@@ -1,25 +1,43 @@
 package Controllers;
 
 import Server.Main;
+import org.glassfish.jersey.media.multipart.FormDataParam;
 
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+@Path("entertainment/")
 public class EntertainmentController {
 
-    public static void insertEntertainer(String entertainerName, String description, Float priceHr) {
+    @POST
+    @Path("insert")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String insertEntertainer(@FormDataParam("name") String entertainerName, @FormDataParam("description") String description,
+                                    @FormDataParam("price") Float priceHr) {
 
         try {
+            if (entertainerName == null || description == null || priceHr == null) {
+                throw new Exception("One or more form data parameters are missing in the HTTP request.");
+            }
+            System.out.println("entertainment/new name=" + entertainerName);
+
             PreparedStatement ps = Main.db.prepareStatement("INSERT INTO Entertainment(EntertainerName, Description, PriceHr) VALUES (?, ?, ?)");
 
             ps.setString(1, entertainerName);
             ps.setString(2, description);
             ps.setFloat(3, priceHr);
             ps.executeUpdate();
-            System.out.println("Record added to Entertainment table");
+            return "{\"status\": \"OK\"}";
 
         } catch (Exception exception) {
             System.out.println("Database error: " + exception.getMessage());
+            return "{\"error\": \"Unable to create new item, please see server console for more info.\"}";
         }
 
     }

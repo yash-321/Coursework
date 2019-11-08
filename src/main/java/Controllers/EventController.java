@@ -18,9 +18,9 @@ public class EventController {
     @Path("new")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public String createEvent(@FormDataParam("venueID") Integer venueID,@FormDataParam("catererID") Integer catererID,
-                              @FormDataParam("entertainerID") Integer entertainerID, @FormDataParam("email") Integer email,
-                              @FormDataParam("date") Date date, @FormDataParam("hours") Integer hours,
+    public String createEvent(@FormDataParam("venueID") Integer venueID, @FormDataParam("catererID") Integer catererID,
+                              @FormDataParam("entertainerID") Integer entertainerID, @FormDataParam("email") String email,
+                              @FormDataParam("date") String date, @FormDataParam("hours") Integer hours,
                               @FormDataParam("people") Integer people) {
 
         try {
@@ -33,8 +33,8 @@ public class EventController {
             ps.setInt(1, venueID);
             ps.setInt(2, catererID);
             ps.setInt(3, entertainerID);
-            ps.setInt(4, email);
-            ps.setDate(5, date);
+            ps.setString(4, email);
+            ps.setString(5, date);
             ps.setInt(6, hours);
             ps.setInt(7, people);
             ps.executeUpdate();
@@ -76,7 +76,7 @@ public class EventController {
     @Produces(MediaType.APPLICATION_JSON)
     public String updateEvent(@FormDataParam("eventID") Integer eventID, @FormDataParam("venueID") Integer venueID,
                               @FormDataParam("catererID") Integer catererID, @FormDataParam("entertainerID") Integer entertainerID,
-                              @FormDataParam("email") String email, @FormDataParam("date") Date date, @FormDataParam("hours") Integer hours,
+                              @FormDataParam("email") String email, @FormDataParam("date") String date, @FormDataParam("hours") Integer hours,
                               @FormDataParam("people") Integer people) {
 
         try {
@@ -93,7 +93,7 @@ public class EventController {
             ps.setInt(2,catererID);
             ps.setInt(3,entertainerID);
             ps.setString(4,email);
-            ps.setDate(5,date);
+            ps.setString(5,date);
             ps.setInt(6,hours);
             ps.setInt(7,people);
             ps.setInt(8,eventID);
