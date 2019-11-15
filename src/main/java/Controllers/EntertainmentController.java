@@ -2,6 +2,8 @@ package Controllers;
 
 import Server.Main;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -42,55 +44,82 @@ public class EntertainmentController {
 
     }
 
-    public static void deleteEntertainer(int entertainerID) {
+    @POST
+    @Path("delete")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String deleteEntertainer(@FormDataParam("id") Integer entertainerID) {
+
         try{
+            if (entertainerID == null) {
+                throw new Exception("ID is missing in the HTTP request.");
+            }
+            System.out.println("entertainment/delete id=" + entertainerID);
 
             PreparedStatement ps = Main.db.prepareStatement("DELETE FROM Entertainment WHERE EntertainerID = ?");
             ps.setInt(1, entertainerID);
             ps.executeUpdate();
+            return "{\"status\": \"OK\"}";
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Database error: " + e.getMessage());
+            return "{\"error\": \"Unable to create new item, please see server console for more info.\"}";
         }
     }
 
-    public static void updateEntertainer(String entertainerName, String description, Float priceHr) {
+
+    @POST
+    @Path("update")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String updateEntertainer(@FormDataParam("id") Integer entertainerID, @FormDataParam("name") String entertainerName, @FormDataParam("description") String description,
+                                    @FormDataParam("price") Float priceHr) {
 
         try {
+            if (entertainerID == null) {
+                throw new Exception("One or more form data parameters are missing in the HTTP request.");
+            }
+            System.out.println("entertainment/update id=" + entertainerID);
+
             PreparedStatement ps = Main.db.prepareStatement("UPDATE Entertainment SET EntertainerName = ?, Description = ?, PriceHr = ? WHERE EntertainerID = ?");
 
             ps.setString(1, entertainerName);
             ps.setString(2, description);
             ps.setFloat(3, priceHr);
-
+            ps.setInt(4, entertainerID);
             ps.execute();
+            return "{\"status\": \"OK\"}";
 
         } catch (Exception exception) {
             System.out.println("Database error: " + exception.getMessage());
+            return "{\"error\": \"Unable to create new item, please see server console for more info.\"}";
         }
     }
 
-    public static void listEntertainer() {
-
+    @POST
+    @Path("list")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String listEntertainer() {
+        System.out.println("venue/list");
+        JSONArray list = new JSONArray();
         try {
 
             PreparedStatement ps = Main.db.prepareStatement("SELECT EntertainerID, EntertainerName, Description, PriceHr FROM Entertainment");
 
             ResultSet results = ps.executeQuery();
             while (results.next()) {
-                int entertainerID = results.getInt(1);
-                String entertainerName = results.getString(2);
-                String description = results.getString(3);
-                Float priceHr = results.getFloat(4);
-                System.out.print("EntertainerID: " + entertainerID + ", ");
-                System.out.print("Entertainer Name: " + entertainerName + ", ");
-                System.out.print("Description: " + description + ", ");
-                System.out.print("Price/hour: " + priceHr);
-                System.out.println(" ");
+                JSONObject item = new JSONObject();
+                item.put("id", results.getInt(1));
+                item.put("name", results.getString(2));
+                item.put("description", results.getString(3));
+                item.put("price", results.getFloat(4));
+                list.add(item);
             }
-
+            return list.toString();
         } catch (Exception exception) {
             System.out.println("Database error: " + exception.getMessage());
+            return "{\"error\": \"Unable to list items, please see server console for more info.\"}";
         }
     }
 }
