@@ -3,10 +3,7 @@ package Controllers;
 import Server.Main;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -57,7 +54,7 @@ public class UserController {
 
 
     @POST
-    @Path("insert")
+    @Path("new")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public String insertUser(
@@ -74,7 +71,7 @@ public class UserController {
             PreparedStatement ps = Main.db.prepareStatement(
                     "INSERT INTO Users(Email, Password, Postcode, FirstName, Surname) VALUES (?, ?, ?, ?, ?)");
 
-            ps.setString(1, email);
+            ps.setString(1, email.toLowerCase());
             ps.setString(2, password);
             ps.setString(3, postcode);
             ps.setString(4, firstName);
@@ -92,22 +89,32 @@ public class UserController {
     @Path("delete")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public String deleteUser(@FormDataParam("email") String email) {
+    public String deleteUser(@CookieParam("sessionToken") String sessionCookie) {
 
-        try {
-            if (email == null) {
-                throw new Exception("Email is missing from HTTP request.");
+        System.out.println("/user/check - Checking user against database");
+
+        String currentUser = UserController.validateSessionCookie(sessionCookie);
+
+        if (currentUser == null) {
+            System.out.println("Error: Invalid user session token");
+            return "{\"error\": \"Invalid user session token\"}";
+        } else {
+
+            try {
+                if (currentUser == null) {
+                    throw new Exception("Email is missing from HTTP request.");
+                }
+                System.out.println("user/delete email=" + currentUser);
+
+                PreparedStatement ps = Main.db.prepareStatement("DELETE FROM Users WHERE Email = ?");
+                ps.setString(1, currentUser.toLowerCase());
+                ps.executeUpdate();
+                return "{\"status\": \"OK\"}";
+
+            } catch (Exception e) {
+                System.out.println("Database error: " + e.getMessage());
+                return "{\"error\": \"Unable to delete item, please see server console for more info.\"}";
             }
-            System.out.println("user/delete email=" + email);
-
-            PreparedStatement ps = Main.db.prepareStatement("DELETE FROM Users WHERE email = ?");
-            ps.setString(1, email);
-            ps.executeUpdate();
-            return "{\"status\": \"OK\"}";
-
-        } catch (Exception e) {
-            System.out.println("Database error: " + e.getMessage());
-            return "{\"error\": \"Unable to delete item, please see server console for more info.\"}";
         }
     }
 
@@ -123,11 +130,11 @@ public class UserController {
             if (email == null || password == null || postcode == null || firstName == null || surname == null) {
                 throw new Exception("One or more form data parameters are missing in the HTTP request.");
             }
-            System.out.println("user/update email=" + email);
+            System.out.println("user/update email=" + email.toLowerCase());
 
             PreparedStatement ps = Main.db.prepareStatement("UPDATE Users SET Email = ?, Password = ?, Postcode = ?, FirstName = ?, Surname = ? WHERE Email = ?");
 
-            ps.setString(1, email);
+            ps.setString(1, email.toLowerCase());
             ps.setString(2, password);
             ps.setString(3, postcode);
             ps.setString(4, firstName);
@@ -139,5 +146,55 @@ public class UserController {
             System.out.println("Database error: " + exception.getMessage());
             return "{\"error\": \"Unable to update item, please see server console for more info.\"}";
         }
+    }
+
+    public static String validateSessionCookie(String token) {
+        try {
+            PreparedStatement statement = Main.db.prepareStatement("SELECT Email FROM Users WHERE SessionToken = ?");
+            statement.setString(1, token);
+            ResultSet results = statement.executeQuery();
+            if (results != null && results.next()) {
+                return results.getString("Email").toLowerCase();
+            }
+        } catch (Exception resultsException) {
+            String error = "Database error - can't select by email from 'Users' table: " + resultsException.getMessage();
+
+            System.out.println(error);
+        }
+        return null;
+    }
+
+    @GET
+    @Path("check")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String checkLogin(@CookieParam("sessionToken") String sessionCookie) {
+
+        System.out.println("/user/check - Checking user against database");
+
+        String currentUser = validateSessionCookie(sessionCookie);
+
+        if (currentUser == null) {
+            System.out.println("Error: Invalid user session token");
+            return "{\"error\": \"Invalid user session token\"}";
+        } else {
+            return "{\"username\": \"" + currentUser + "\"}";
+        }
+    }
+
+    @POST
+    @Path("logout")
+    public void logout(@CookieParam("sessionToken") String token) {
+
+        System.out.println("/user/logout - Logging out user");
+
+        try {
+            PreparedStatement statement = Main.db.prepareStatement("Update Users SET SessionToken = NULL WHERE SessionToken = ?");
+            statement.setString(1, token);
+            statement.executeUpdate();
+        } catch (Exception resultsException) {
+            String error = "Database error - can't update 'Users' table: " + resultsException.getMessage();
+            System.out.println(error);
+        }
+
     }
 }

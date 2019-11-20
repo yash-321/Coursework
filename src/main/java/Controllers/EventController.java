@@ -2,14 +2,14 @@ package Controllers;
 
 import Server.Main;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 @Path("event/")
 public class EventController {
@@ -89,14 +89,14 @@ public class EventController {
             PreparedStatement ps = Main.db.prepareStatement(
                     "UPDATE Events SET VenueID = ?, CatererID = ?, EnterertainerID = ?, Email = ?, Date = ?, Hours = ?, People = ? WHERE EventID = ?");
 
-            ps.setInt(1,venueID);
-            ps.setInt(2,catererID);
-            ps.setInt(3,entertainerID);
-            ps.setString(4,email);
-            ps.setString(5,date);
-            ps.setInt(6,hours);
-            ps.setInt(7,people);
-            ps.setInt(8,eventID);
+            ps.setInt(1, venueID);
+            ps.setInt(2, catererID);
+            ps.setInt(3, entertainerID);
+            ps.setString(4, email);
+            ps.setString(5, date);
+            ps.setInt(6, hours);
+            ps.setInt(7, people);
+            ps.setInt(8, eventID);
             ps.execute();
             return "{\"status\": \"OK\"}";
 
@@ -106,5 +106,44 @@ public class EventController {
             return "{\"error\": \"Unable to update item, please see server console for more info.\"}";
         }
 
+    }
+
+    @GET
+    @Path("list")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String listEvent(@CookieParam("token") String token) {
+
+        String currentUser = UserController.validateSessionCookie(token);
+
+        if (currentUser == null) {
+            System.out.println("Error: Invalid user session token");
+            return "{\"error\": \"Invalid user session token\"}";
+        } else {
+
+            System.out.println("event/list for user " + currentUser);
+            JSONArray list = new JSONArray();
+            try {
+                PreparedStatement ps = Main.db.prepareStatement(
+                        "SELECT EventID, VenueID, CatererID, EntertainerID, Date, Hours, People FROM Events WHERE Email = ?");
+                ps.setString(1,currentUser);
+
+                ResultSet results = ps.executeQuery();
+                while (results.next()) {
+                    JSONObject item = new JSONObject();
+                    item.put("eventID", results.getInt(1));
+                    item.put("VenueID", results.getString(2));
+                    item.put("CatererID", results.getString(3));
+                    item.put("EntertainerID", results.getString(4));
+                    item.put("date", results.getInt(5));
+                    item.put("hours", results.getFloat(6));
+                    item.put("people", results.getFloat(7));
+                    list.add(item);
+                }
+                return list.toString();
+            } catch (Exception exception) {
+                System.out.println("Database error: " + exception.getMessage());
+                return "{\"error\": \"Unable to list items, please see server console for more info.\"}";
+            }
+        }
     }
 }
