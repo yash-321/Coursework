@@ -131,7 +131,7 @@ public class VenueController {
         System.out.println("venue/list");
         JSONArray list = new JSONArray();
         try {
-            PreparedStatement ps = Main.db.prepareStatement("SELECT VenueID, VenueName, Address, City, Postcode, Capacity, PriceHr FROM Venues");
+            PreparedStatement ps = Main.db.prepareStatement("SELECT VenueID, VenueName, Address, City, Postcode, Capacity, PriceHr, Image FROM Venues");
 
             ResultSet results = ps.executeQuery();
             while (results.next()) {
@@ -142,7 +142,8 @@ public class VenueController {
                 item.put("city", results.getString(4));
                 item.put("postcode", results.getString(5));
                 item.put("capacity", results.getInt(6));
-                item.put("price/hr", results.getFloat(7));
+                item.put("priceHr", results.getFloat(7));
+                item.put("image", results.getString(8));
                 list.add(item);
             }
             return list.toString();

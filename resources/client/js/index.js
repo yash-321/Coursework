@@ -1,15 +1,24 @@
 function pageLoad() {
 
-    let now = new Date();
+    let venueHTML = '';
 
-    let myHTML = '<div style="text-align:center;">'
-        + '<h1>Welcome to my API powered website!</h1>'
-        + '<img src="/client/img/download.jpg"  alt="Logo"/>'
-        + '<div style="font-style: italic;">'
-        + 'Generated at ' + now.toLocaleTimeString()
-        + '</div>'
-        + '</div>';
+    fetch('/venue/list', {method: 'get'}
+    ).then(response => response.json()
+    ).then(venues => {
 
-    document.getElementById("testDiv").innerHTML = myHTML;
+        for (let venue of venues) {
+
+            venueHTML += `<div class="venueOuterDiv" href="#">` +
+                `<div class="venueInnerDiv"><img src="/client/img/${venue.image}" alt="Picture of ${venue.name}" height="100px"></div>` +
+                `<div class="venueInnerDiv">${venue.name}</div>` +
+            `</div>`;
+
+        }
+
+        venueHTML += '';
+
+        document.getElementById("listDiv").innerHTML = venueHTML;
+
+    });
 
 }

@@ -1,5 +1,5 @@
 body {
-    background-color: navy;
+    background-color: indianred;
     margin: 0;
     font-family: 'Arial', serif;
 }
@@ -14,4 +14,41 @@ h1 {
     margin: 0 auto;
     min-height: 600px;
     padding: 32px;
+}
+
+.venueOuterDiv, .venueInnerDiv {
+    margin: 10px;
+    padding: 20px;
+    text-align: center;
+}
+
+.venueOuterDiv {
+    width: 25%;
+    display: inline-block;
+    box-shadow: grey 5px 5px 5px;
+    border: 1px solid black;
+}
+
+.venueOuterDiv:hover {
+    opacity:.2;
+}
+
+.venueInnerDiv {
+    text-align: center;
+}
+
+.venueLink, .venueLink {
+    background-color: red;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    width: 200px;
+}
+
+.venueLink:hover {
+    background-color: white;
+    color: red;
+    border: 1px red;
 }
