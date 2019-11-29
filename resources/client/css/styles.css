@@ -16,13 +16,10 @@ h1 {
     padding: 32px;
 }
 
-.venueOuterDiv, .venueInnerDiv {
+.venueOuterDiv{
     margin: 10px;
     padding: 20px;
     text-align: center;
-}
-
-.venueOuterDiv {
     width: 25%;
     display: inline-block;
     box-shadow: grey 5px 5px 5px;
@@ -33,25 +30,30 @@ h1 {
     opacity:.50;
 }
 
+.venueOuterDiv:active {
+    box-shadow: 1px 1px 1px;
+    transform: translateY(4px);
+}
+
 .venueInnerDiv {
+    margin: 10px;
+    padding: 20px;
     text-align: center;
+    font-family: 'Montserrat';
+    font-size: 18px;
 }
 
-.venueLink, .venueLink {
-    background-color: red;
-    color: white;
-    padding: 15px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    width: 200px;
+.city{
+    text-align: left;
+    font-family: 'Montserrat';
+}
+.capacity{
+    text-align: right;
+    font-family: 'Montserrat';
+    color: orangered;
 }
 
-.venueLink:hover {
-    background-color: white;
-    color: red;
-    border: 1px red;
-}
+
 
 .header{
     width: 100%;
@@ -114,5 +116,11 @@ h1 {
 }
 .navigation a:hover{
     opacity: .50;
+}
 
+.title{
+    horiz-align: center;
+    font-family: 'Montserrat';
+    font-size: 40px;
+    font-weight: 800;
 }
