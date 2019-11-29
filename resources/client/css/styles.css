@@ -1,5 +1,5 @@
 body {
-    background-color: indianred;
+    background-color: white;
     margin: 0;
     font-family: 'Arial', serif;
 }
@@ -30,7 +30,7 @@ h1 {
 }
 
 .venueOuterDiv:hover {
-    opacity:.2;
+    opacity:.50;
 }
 
 .venueInnerDiv {
@@ -51,4 +51,68 @@ h1 {
     background-color: white;
     color: red;
     border: 1px red;
+}
+
+.header{
+    width: 100%;
+    height: 80px;
+    display: block;
+    background-color: #101010;
+}
+
+.inner_header{
+    width: 90%;
+    height: 100%;
+    display: block;
+    margin: 0 auto;
+}
+
+.logo_container{
+    height: 100%;
+    display: table;
+    float: left;
+}
+
+.logo_container h1{
+    color: white;
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+    font-family: 'Montserrat';
+    font-size: 32px;
+    font-weight: 200;
+}
+
+.logo_container h1 span{
+    font-weight: 800;
+}
+
+.navigation{
+    float: right;
+    height: 100%;
+    margin: 0px;
+}
+
+.navigation a{
+    height: 100%;
+    display: table;
+    float: left;
+    padding: 0px 20px;
+}
+
+.navigation a:last-child{
+    padding-right: 0px;
+}
+
+.navigation a li{
+    display: table-cell;
+    height: 100%;
+    vertical-align: middle;
+    color: white;
+    font-family: 'Montserrat';
+    font-size: 16px;
+}
+.navigation a:hover{
+    opacity: .50;
+
 }

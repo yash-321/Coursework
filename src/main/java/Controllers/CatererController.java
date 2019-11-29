@@ -18,7 +18,7 @@ public class CatererController {
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public String insertCaterer(@FormDataParam("name") String catererName, @FormDataParam("type") String foodType,
-                                    @FormDataParam("price") Float priceHead) {
+                                @FormDataParam("price") Float priceHead) {
 
         try {
             if (catererName == null || foodType == null || priceHead == null) {

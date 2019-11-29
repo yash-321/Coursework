@@ -177,7 +177,7 @@ public class UserController {
             System.out.println("Error: Invalid user session token");
             return "{\"error\": \"Invalid user session token\"}";
         } else {
-            return "{\"username\": \"" + currentUser + "\"}";
+            return "{\"email\": \"" + currentUser + "\"}";
         }
     }
 
