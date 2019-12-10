@@ -2,11 +2,13 @@ package Controllers;
 
 import Server.Main;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.json.simple.JSONObject;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.UUID;
 
 @Path("user/")
@@ -85,6 +87,33 @@ public class UserController {
         }
     }
 
+    @GET
+    @Path("get")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getUser(@CookieParam("token") String token) throws Exception {
+        if (!UserController.validateSessionCookie(token)) {
+            return "{\"error\": \"You don't appear to be logged in.\"}";
+        }
+        System.out.println("user/get/" + token);
+        JSONObject item = new JSONObject();
+        try {
+            PreparedStatement ps = Main.db.prepareStatement("SELECT  Email, Password, Postcode, FirstName, Surname FROM Users WHERE SessionToken = ?");
+            ps.setString(1, token);
+            ResultSet results = ps.executeQuery();
+            if (results.next()) {
+                item.put("email", results.getString(1));
+                item.put("password", results.getString(2));
+                item.put("postcode", results.getString(3));
+                item.put("firstname", results.getString(4));
+                item.put("surname", results.getInt(5));
+            }
+            return item.toString();
+        } catch (Exception exception) {
+            System.out.println("Database error: " + exception.getMessage());
+            return "{\"error\": \"Unable to get item, please see server console for more info.\"}";
+        }
+    }
+
     @POST
     @Path("delete")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -93,28 +122,28 @@ public class UserController {
 
         System.out.println("/user/check - Checking user against database");
 
-        String currentUser = UserController.validateSessionCookie(sessionCookie);
-
-        if (currentUser == null) {
-            System.out.println("Error: Invalid user session token");
-            return "{\"error\": \"Invalid user session token\"}";
-        } else {
-
+        if (UserController.validateSessionCookie(sessionCookie) == true){
             try {
-                if (currentUser == null) {
-                    throw new Exception("Email is missing from HTTP request.");
+                PreparedStatement statement = Main.db.prepareStatement("SELECT Email FROM Users WHERE SessionToken = ?");
+                statement.setString(1, sessionCookie);
+                ResultSet results = statement.executeQuery();
+                if (results != null && results.next()) {
+                    String currentUser = ("Email").toLowerCase();
+                    PreparedStatement ps = Main.db.prepareStatement("DELETE FROM Users WHERE Email = ?");
+                    ps.setString(1, currentUser.toLowerCase());
+                    ps.executeUpdate();
+                    return "{\"status\": \"OK\"}";
+                } else {
+                    System.out.println("Error: Invalid user session token");
+                    return "{\"error\": \"Invalid user session token\"}";
                 }
-                System.out.println("user/delete email=" + currentUser);
-
-                PreparedStatement ps = Main.db.prepareStatement("DELETE FROM Users WHERE Email = ?");
-                ps.setString(1, currentUser.toLowerCase());
-                ps.executeUpdate();
-                return "{\"status\": \"OK\"}";
-
             } catch (Exception e) {
                 System.out.println("Database error: " + e.getMessage());
                 return "{\"error\": \"Unable to delete item, please see server console for more info.\"}";
             }
+        }else {
+            System.out.println("Error: Invalid user session token");
+            return "{\"error\": \"Invalid user session token\"}";
         }
     }
 
@@ -148,36 +177,44 @@ public class UserController {
         }
     }
 
-    public static String validateSessionCookie(String token) {
+    public static boolean validateSessionCookie(String token) {
         try {
-            PreparedStatement statement = Main.db.prepareStatement("SELECT Email FROM Users WHERE SessionToken = ?");
-            statement.setString(1, token);
-            ResultSet results = statement.executeQuery();
-            if (results != null && results.next()) {
-                return results.getString("Email").toLowerCase();
-            }
-        } catch (Exception resultsException) {
-            String error = "Database error - can't select by email from 'Users' table: " + resultsException.getMessage();
-
-            System.out.println(error);
+            PreparedStatement ps = Main.db.prepareStatement("SELECT Email FROM Users WHERE SessionToken = ?");
+            ps.setString(1, token);
+            ResultSet logoutResults = ps.executeQuery();
+            return logoutResults.next();
+        } catch (Exception exception) {
+            System.out.println("Database error validating session token: " + exception.getMessage());
+            return false;
         }
-        return null;
     }
+
 
     @GET
     @Path("check")
     @Produces(MediaType.APPLICATION_JSON)
-    public String checkLogin(@CookieParam("sessionToken") String sessionCookie) {
+    public String checkLogin(@CookieParam("sessionToken") String sessionCookie){
 
-        System.out.println("/user/check - Checking user against database");
-
-        String currentUser = validateSessionCookie(sessionCookie);
-
-        if (currentUser == null) {
-            System.out.println("Error: Invalid user session token");
-            return "{\"error\": \"Invalid user session token\"}";
-        } else {
-            return "{\"email\": \"" + currentUser + "\"}";
+        try {
+            System.out.println("/user/check - Checking user against database");
+            if (validateSessionCookie(sessionCookie) == true) {
+                PreparedStatement statement = Main.db.prepareStatement("SELECT Email FROM Users WHERE SessionToken = ?");
+                statement.setString(1, sessionCookie);
+                ResultSet results = statement.executeQuery();
+                if (results != null && results.next()) {
+                    String currentUser = ("Email").toLowerCase();
+                    return "{\"email\": \"" + currentUser + "\"}";
+                } else {
+                    System.out.println("Error: Invalid user session token");
+                    return "{\"error\": \"Invalid user session token\"}";
+                }
+            }else {
+                System.out.println("Error: Invalid user session token");
+                return "{\"error\": \"Invalid user session token\"}";
+            }
+        }catch (Exception exception){
+            System.out.println("Database error: " + exception.getMessage());
+            return "{\"error\": \"Unable to update item, please see server console for more info.\"}";
         }
     }
 

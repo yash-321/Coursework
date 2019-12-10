@@ -108,6 +108,7 @@ public class EventController {
 
     }
 
+    /*
     @GET
     @Path("list")
     @Produces(MediaType.APPLICATION_JSON)
@@ -146,4 +147,5 @@ public class EventController {
             }
         }
     }
+    */
 }

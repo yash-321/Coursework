@@ -21,6 +21,34 @@ function pageLoad() {
 
         document.getElementById("listDiv").innerHTML = venueHTML;
 
+        checkLogin();
+
     });
+
+}
+
+function checkLogin() {
+
+    let logInHTML = '';
+
+    fetch('/user/get', {method: 'get'}
+    ).then(response => response.json()
+    ).then(user => {
+
+        let name = user
+
+        if (name === undefined) {
+
+            logInHTML = "<a href='/client/login.html'>Sign in</a>";
+
+        } else {
+
+            logInHTML = username + ". <a href='/client/login.html?logout'>Log out</a>";
+
+        }
+
+    });
+
+    document.getElementById("loggedInDetails").innerHTML = logInHTML;
 
 }
