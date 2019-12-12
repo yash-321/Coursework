@@ -29,25 +29,19 @@ function pageLoad() {
 
 function checkLogin() {
 
+    let name = Cookies.get("firstname");
+
     let logInHTML = '';
 
-    fetch('/user/get', {method: 'get'}
-    ).then(response => response.json()
-    ).then(user => {
+    if (name === undefined) {
 
-        let name = user
+        logInHTML = "<li href='/client/login.html'>Sign in</li>";
 
-        if (name === undefined) {
+    } else {
 
-            logInHTML = "<a href='/client/login.html'>Sign in</a>";
+        logInHTML = name + " <li href='/client/login.html?logout'>Log out</li>";
 
-        } else {
-
-            logInHTML = username + ". <a href='/client/login.html?logout'>Log out</a>";
-
-        }
-
-    });
+    }
 
     document.getElementById("loggedInDetails").innerHTML = logInHTML;
 

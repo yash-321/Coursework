@@ -36,12 +36,19 @@ public class UserController {
 
                 String token = UUID.randomUUID().toString();
                 PreparedStatement statement2 = Main.db.prepareStatement(
-                        "UPDATE Users SET SessionToken = ? WHERE LOWER(Email) = ?"
-                );
+                        "UPDATE Users SET SessionToken = ? WHERE LOWER(Email) = ?");
                 statement2.setString(1, token);
                 statement2.setString(2, email.toLowerCase());
                 statement2.executeUpdate();
-                return "{\"token\": \"" + token + "\"}";
+                JSONObject item = new JSONObject();
+                PreparedStatement statement3 = Main.db.prepareStatement("SELECT FirstName, SessionToken FROM Users WHERE SessionToken = ?");
+                statement3.setString(1,token);
+                ResultSet a = statement3.executeQuery();
+                if (a.next()){
+                    item.put("firstname",a.getString(1));
+                    item.put("token",a.getString(2));
+                }
+                return item.toString();
 
             } else {
                 return "{\"error\": \"Can't find user account.\"}";
@@ -220,7 +227,7 @@ public class UserController {
 
     @POST
     @Path("logout")
-    public void logout(@CookieParam("sessionToken") String token) {
+    public String logout(@CookieParam("token") String token) {
 
         System.out.println("/user/logout - Logging out user");
 
@@ -228,9 +235,11 @@ public class UserController {
             PreparedStatement statement = Main.db.prepareStatement("Update Users SET SessionToken = NULL WHERE SessionToken = ?");
             statement.setString(1, token);
             statement.executeUpdate();
+            return " ";
         } catch (Exception resultsException) {
             String error = "Database error - can't update 'Users' table: " + resultsException.getMessage();
             System.out.println(error);
+            return "{\"error\": \"Unable to log user out.\"}";
         }
 
     }
