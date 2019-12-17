@@ -52,16 +52,18 @@ public class VenueController {
         System.out.println("venue/get/" + venueID);
         JSONObject item = new JSONObject();
         try {
-            PreparedStatement ps = Main.db.prepareStatement("SELECT  VenueName, Address, City, Postcode, Capacity, PriceHr FROM Venues WHERE VenueID = ?");
+            PreparedStatement ps = Main.db.prepareStatement("SELECT VenueID, VenueName, Address, City, Postcode, Capacity, PriceHr, Image FROM Venues WHERE VenueID = ?");
             ps.setInt(1, venueID);
             ResultSet results = ps.executeQuery();
             if (results.next()) {
-                item.put("name", results.getString(1));
-                item.put("address", results.getString(2));
-                item.put("city", results.getString(3));
-                item.put("postcode", results.getString(4));
-                item.put("capacity", results.getInt(5));
-                item.put("price/hr", results.getFloat(6));
+                item.put("id", results.getInt(1));
+                item.put("name", results.getString(2));
+                item.put("address", results.getString(3));
+                item.put("city", results.getString(4));
+                item.put("postcode", results.getString(5));
+                item.put("capacity", results.getInt(6));
+                item.put("priceHr", results.getFloat(7));
+                item.put("image", results.getString(8));
             }
             return item.toString();
         } catch (Exception exception) {

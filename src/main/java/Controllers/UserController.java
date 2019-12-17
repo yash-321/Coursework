@@ -235,7 +235,7 @@ public class UserController {
             PreparedStatement statement = Main.db.prepareStatement("Update Users SET SessionToken = NULL WHERE SessionToken = ?");
             statement.setString(1, token);
             statement.executeUpdate();
-            return " ";
+            return "{\"status\": \"OK\"}";
         } catch (Exception resultsException) {
             String error = "Database error - can't update 'Users' table: " + resultsException.getMessage();
             System.out.println(error);

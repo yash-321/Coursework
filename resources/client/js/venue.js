@@ -1,23 +1,42 @@
+
+/*-------------------------------------------------------
+  A utility function to extract the query string parameters
+  and return them as a map of key-value pairs
+  ------------------------------------------------------*/
+function getQueryStringParameters() {
+    let params = [];
+    let q = document.URL.split('?')[1];
+    if (q !== undefined) {
+        q = q.split('&');
+        for (let i = 0; i < q.length; i++) {
+            let bits = q[i].split('=');
+            params[bits[0]] = bits[1];
+        }
+    }
+    return params;
+}
+//-----------------------------------------------------------
+
 function pageLoad() {
+
+    let qs = getQueryStringParameters();
+    let id = Number(qs["id"]);
+
+    alert ("you are looking at venue " + id);
 
     let venueHTML = '';
 
-    fetch('/venue/list', {method: 'get'}
+    fetch('/venue/get/' + id, {method: 'get'}
     ).then(response => response.json()
     ).then(venues => {
 
-        for (let venue of venues) {
-
-            venueHTML += `<a href="/client/venue.html?id=${venue.id}"><div class="venueOuterDiv">` +
+            venueHTML += `<div class="venueOuterDiv">` +
                 `<div class="venueImage"><img src="/client/img/${venue.image}" alt="Picture of ${venue.name}" width="100%" height="200px"></div>` +
                 `<div class="venueInnerDiv">${venue.name}</div>` +
                 `<div class="city">${venue.city}</div>` +
                 `<div class="capacity">${venue.capacity}</div>` +
-            `</div></a>`;
+                `</div>`;
 
-        }
-
-        venueHTML += '';
 
         document.getElementById("listDiv").innerHTML = venueHTML;
 
