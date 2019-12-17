@@ -28,7 +28,7 @@ function pageLoad() {
 
     fetch('/venue/get/' + id, {method: 'get'}
     ).then(response => response.json()
-    ).then(venues => {
+    ).then(venue => {
 
             venueHTML += `<div class="venueOuterDiv">` +
                 `<div class="venueImage"><img src="/client/img/${venue.image}" alt="Picture of ${venue.name}" width="100%" height="200px"></div>` +
