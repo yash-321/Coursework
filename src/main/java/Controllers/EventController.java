@@ -108,44 +108,48 @@ public class EventController {
 
     }
 
-    /*
     @GET
     @Path("list")
     @Produces(MediaType.APPLICATION_JSON)
-    public String listEvent(@CookieParam("token") String token) {
+    public String listEvent(@CookieParam("sessionToken") String sessionCookie) {
 
-        String currentUser = UserController.validateSessionCookie(token);
 
-        if (currentUser == null) {
-            System.out.println("Error: Invalid user session token");
-            return "{\"error\": \"Invalid user session token\"}";
-        } else {
-
-            System.out.println("event/list for user " + currentUser);
+        if (UserController.validateSessionCookie(sessionCookie) == true){
             JSONArray list = new JSONArray();
             try {
-                PreparedStatement ps = Main.db.prepareStatement(
-                        "SELECT EventID, VenueID, CatererID, EntertainerID, Date, Hours, People FROM Events WHERE Email = ?");
-                ps.setString(1,currentUser);
+                PreparedStatement statement = Main.db.prepareStatement("SELECT Email FROM Users WHERE SessionToken = ?");
+                statement.setString(1, sessionCookie);
+                ResultSet results = statement.executeQuery();
+                if (results != null && results.next()) {
+                    String currentUser = ("Email").toLowerCase();
+                    PreparedStatement ps = Main.db.prepareStatement(
+                            "SELECT EventID, VenueID, CatererID, EntertainerID, Date, Hours, People FROM Events WHERE Email = ?");
+                    ps.setString(1,currentUser);
 
-                ResultSet results = ps.executeQuery();
-                while (results.next()) {
-                    JSONObject item = new JSONObject();
-                    item.put("eventID", results.getInt(1));
-                    item.put("VenueID", results.getString(2));
-                    item.put("CatererID", results.getString(3));
-                    item.put("EntertainerID", results.getString(4));
-                    item.put("date", results.getInt(5));
-                    item.put("hours", results.getFloat(6));
-                    item.put("people", results.getFloat(7));
-                    list.add(item);
+                    ResultSet results1 = ps.executeQuery();
+                    while (results1.next()) {
+                        JSONObject item = new JSONObject();
+                        item.put("eventID", results1.getInt(1));
+                        item.put("VenueID", results1.getString(2));
+                        item.put("CatererID", results1.getString(3));
+                        item.put("EntertainerID", results1.getString(4));
+                        item.put("date", results1.getInt(5));
+                        item.put("hours", results1.getFloat(6));
+                        item.put("people", results1.getFloat(7));
+                        list.add(item);
+                    }
+                    return list.toString();
+                } else {
+                    System.out.println("Error: Invalid user session token");
+                    return "{\"error\": \"Invalid user session token\"}";
                 }
-                return list.toString();
-            } catch (Exception exception) {
-                System.out.println("Database error: " + exception.getMessage());
-                return "{\"error\": \"Unable to list items, please see server console for more info.\"}";
+            } catch (Exception e) {
+                System.out.println("Database error: " + e.getMessage());
+                return "{\"error\": \"Unable to delete item, please see server console for more info.\"}";
             }
+        }else {
+            System.out.println("Error: Invalid user session token");
+            return "{\"error\": \"Invalid user session token\"}";
         }
     }
-    */
 }

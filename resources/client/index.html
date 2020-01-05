@@ -11,6 +11,18 @@
 </head>
 <STYLE>A {text-decoration: none;} </STYLE>
 <body onload="pageLoad()">
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h1>Contact Us</h1>
+            <a>Email: help@eventplanner.com</a>
+            <br>
+            <a>Phone: 01234 567890</a>
+        </div>
+    </div>
+
     <div class="header">
         <div class="inner_header">
             <div class="logo_container">
@@ -18,7 +30,8 @@
             </div>
 
             <ul class="navigation">
-                <a href="#"><li>Search</li></a>
+                <a href="/client/index.html"><li>Home</li></a>
+                <a id="myBtn" style="cursor: pointer"><li>Contact</li></a>
                 <a id="loggedInDetails"></a>
             </ul>
         </div>

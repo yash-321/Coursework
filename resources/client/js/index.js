@@ -22,9 +22,26 @@ function pageLoad() {
         document.getElementById("listDiv").innerHTML = venueHTML;
 
         checkLogin();
-
     });
 
+    // Modal
+    var modal = document.getElementById("myModal");
+    var btn = document.getElementById("myBtn");
+    var span = document.getElementsByClassName("close")[0];
+
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
 }
 
 function checkLogin() {
@@ -35,14 +52,16 @@ function checkLogin() {
 
     if (name === undefined) {
 
-        logInHTML = "<a class='signIn' href='/client/login.html'><li>Sign in</li></a>";
+        logInHTML = "<a class='user' href='/client/login.html' style='padding: 0px'><li>Sign in</li></a>";
 
     } else {
 
-        logInHTML = name + " <a class='signIn' href='/client/login.html?logout'><li>Logout</li></a>";
+        logInHTML = "<a class='user' href='#' style='padding: 0px'><li>My Profile</li></a>" +
+            "<a class='user' href='/client/login.html?logout'><li>Logout</li></a>";
 
     }
 
     document.getElementById("loggedInDetails").innerHTML = logInHTML;
 
 }
+
