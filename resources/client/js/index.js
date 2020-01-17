@@ -9,7 +9,7 @@ function pageLoad() {
         for (let venue of venues) {
 
             venueHTML += `<a href="/client/venue.html?id=${venue.id}"><div class="venueOuterDiv">` +
-                `<div class="venueImage"><img src="/client/img/${venue.image}" alt="Picture of ${venue.name}" width="100%" height="200px"></div>` +
+                `<div class="venImage"><img src="/client/img/${venue.image}" alt="Picture of ${venue.name}" width="100%" height="200px"></div>` +
                 `<div class="venueInnerDiv">${venue.name}</div>` +
                 `<div class="city">${venue.city}</div>` +
                 `<div class="capacity">${venue.capacity}</div>` +

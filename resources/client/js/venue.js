@@ -30,12 +30,10 @@ function pageLoad() {
     ).then(response => response.json()
     ).then(venue => {
 
-            venueHTML += `<div class="venueOuterDiv">` +
-                `<div class="venueImage"><img src="/client/img/${venue.image}" alt="Picture of ${venue.name}" width="100%" height="200px"></div>` +
-                `<div class="venueInnerDiv">${venue.name}</div>` +
-                `<div class="city">${venue.city}</div>` +
-                `<div class="capacity">${venue.capacity}</div>` +
-                `</div>`;
+            venueHTML += `<h1 class="title">${venue.name}</h1>` +
+                `<div class="venueImage"><img src="/client/img/${venue.image}" alt="Picture of ${venue.name}" width="100%" height="500px"></div>` +
+                `<div class="location">${venue.address}, ${venue.city}, ${venue.postcode}</div>` +
+                `<div class="description">${venue.description}</div> <div class="deats">${venue.capacity} ${venue.priceHr}</div>`
 
 
         document.getElementById("listDiv").innerHTML = venueHTML;

@@ -86,7 +86,7 @@ function register(event) {
 
             alert("Register Complete! Login to continue!")
 
-            window.location.href = '../login.html';
+            window.location.href = 'client/login.html';
 
         }
     });

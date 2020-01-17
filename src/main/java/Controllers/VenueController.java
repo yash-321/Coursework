@@ -17,21 +17,25 @@ public class VenueController {
     @Path("insert")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public String insertThing(
-            @FormDataParam("venueName") String venueName, @FormDataParam("address") String address, @FormDataParam("city") String city, @FormDataParam("postcode") String postcode, @FormDataParam("capacity") Integer capacity, @FormDataParam("priceHr") Float priceHr) {
+    public String insertVenue(
+            @FormDataParam("venueName") String venueName, @FormDataParam("address") String address,
+            @FormDataParam("city") String city, @FormDataParam("postcode") String postcode, @FormDataParam("description") String description,
+            @FormDataParam("capacity") Integer capacity, @FormDataParam("priceHr") Float priceHr, @FormDataParam("image") String image) {
         try {
             if (venueName == null || address == null || city == null || postcode == null || capacity == null || priceHr == null) {
                 throw new Exception("One or more form data parameters are missing in the HTTP request.");
             }
 
-            PreparedStatement ps = Main.db.prepareStatement("INSERT INTO Venues(VenueName, Address, City, Postcode, Capacity, PriceHr) VALUES (?, ?, ?, ?, ?, ?)");
+            PreparedStatement ps = Main.db.prepareStatement("INSERT INTO Venues(VenueName, Address, City, Postcode, Description, Capacity, PriceHr, Image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
             ps.setString(1, venueName);
             ps.setString(2, address);
             ps.setString(3, city);
             ps.setString(4, postcode);
-            ps.setInt(5, capacity);
-            ps.setFloat(6, priceHr);
+            ps.setString(5, description);
+            ps.setInt(6, capacity);
+            ps.setFloat(7, priceHr);
+            ps.setString(8, image);
             ps.executeUpdate();
             return "{\"status\": \"OK\"}";
 
@@ -52,7 +56,7 @@ public class VenueController {
         System.out.println("venue/get/" + venueID);
         JSONObject item = new JSONObject();
         try {
-            PreparedStatement ps = Main.db.prepareStatement("SELECT VenueID, VenueName, Address, City, Postcode, Capacity, PriceHr, Image FROM Venues WHERE VenueID = ?");
+            PreparedStatement ps = Main.db.prepareStatement("SELECT VenueID, VenueName, Address, City, Postcode, Description, Capacity, PriceHr, Image FROM Venues WHERE VenueID = ?");
             ps.setInt(1, venueID);
             ResultSet results = ps.executeQuery();
             if (results.next()) {
@@ -61,9 +65,10 @@ public class VenueController {
                 item.put("address", results.getString(3));
                 item.put("city", results.getString(4));
                 item.put("postcode", results.getString(5));
-                item.put("capacity", results.getInt(6));
-                item.put("priceHr", results.getFloat(7));
-                item.put("image", results.getString(8));
+                item.put("description", results.getString(6));
+                item.put("capacity", results.getInt(7));
+                item.put("priceHr", results.getFloat(8));
+                item.put("image", results.getString(9));
             }
             return item.toString();
         } catch (Exception exception) {
