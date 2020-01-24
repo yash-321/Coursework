@@ -127,7 +127,7 @@ public class UserController {
     @Produces(MediaType.APPLICATION_JSON)
     public String deleteUser(@CookieParam("sessionToken") String sessionCookie) {
 
-        System.out.println("/user/check - Checking user against database");
+        System.out.println("/user/delete - Checking user against database");
 
         if (UserController.validateSessionCookie(sessionCookie) == true){
             try {
@@ -135,12 +135,14 @@ public class UserController {
                 statement.setString(1, sessionCookie);
                 ResultSet results = statement.executeQuery();
                 if (results != null && results.next()) {
+                    System.out.println("yes");
                     String currentUser = ("Email").toLowerCase();
                     PreparedStatement ps = Main.db.prepareStatement("DELETE FROM Users WHERE Email = ?");
-                    ps.setString(1, currentUser.toLowerCase());
+                    ps.setString(1, currentUser);
                     ps.executeUpdate();
                     return "{\"status\": \"OK\"}";
                 } else {
+                    System.out.println("a");
                     System.out.println("Error: Invalid user session token");
                     return "{\"error\": \"Invalid user session token\"}";
                 }
@@ -149,6 +151,7 @@ public class UserController {
                 return "{\"error\": \"Unable to delete item, please see server console for more info.\"}";
             }
         }else {
+            System.out.println("b");
             System.out.println("Error: Invalid user session token");
             return "{\"error\": \"Invalid user session token\"}";
         }
@@ -189,7 +192,7 @@ public class UserController {
             PreparedStatement ps = Main.db.prepareStatement("SELECT Email FROM Users WHERE SessionToken = ?");
             ps.setString(1, token);
             ResultSet logoutResults = ps.executeQuery();
-            return logoutResults.next();
+            return true;
         } catch (Exception exception) {
             System.out.println("Database error validating session token: " + exception.getMessage());
             return false;

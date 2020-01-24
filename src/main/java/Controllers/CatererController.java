@@ -59,7 +59,7 @@ public class CatererController {
 
         } catch (Exception e) {
             System.out.println("Database error: " + e.getMessage());
-            return "{\"error\": \"Unable to create new item, please see server console for more info.\"}";
+            return "{\"error\": \"Unable to remove item, please see server console for more info.\"}";
         }
     }
 
