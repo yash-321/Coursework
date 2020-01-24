@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>User</title>
+    <link rel="stylesheet" type="text/css" href="">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,800" rel="stylesheet">
+    <script src="/client/js/event.js"></script>
+    <script src="/client/js/js.cookie.js"></script>
+    <link rel="shortcut icon" href="/client/favicon.ico" type="image/x-icon">
+</head>
+<STYLE>A {text-decoration: none;} </STYLE>
+<body onload="pageLoad()">
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h1>Contact Us</h1>
+        <a>Email: help@eventplanner.com</a>
+        <br>
+        <a>Phone: 01234 567890</a>
+    </div>
+</div>
+
+<div class="header">
+    <div class="inner_header">
+        <div class="logo_container">
+            <h1 href="">EVENT<span>PLANNER</span></h1>
+        </div>
+
+        <ul class="navigation">
+            <a href="/client/index.html"><li>Home</li></a>
+            <a id="myBtn" style="cursor: pointer"><li>Contact</li></a>
+            <a id="loggedInDetails"></a>
+        </ul>
+    </div>
+</div>
+
+<div id="editDiv">
+    <h2 id="editHeading"></h2>
+    <form id="fruitForm">
+        <input type="hidden" name="id" id="fruitId">
+        <div>
+            <label for="fruitName" class="label">Venue ID:</label>
+            <input type="text" name="name" id="fruitName">
+        </div>
+        <div>
+            <label for="fruitImage" class="label">Caterer ID:</label>
+            <input type="text" name="image" id="fruitImage">
+        </div>
+        <div>
+            <label for="fruitColour" class="label">Entertainer ID:</label>
+            <input type="text" name="colour" id="fruitColour">
+        </div>
+        <div>
+            <label for="fruitSize" class="label">Hours:</label>
+            <input type="text" name="size" id="fruitSize">
+        </div>
+        <div>
+            <label for="date" class="label">Date:</label>
+            <input type="text" name="size" id="date">
+        </div>
+        <div>
+            <label for="people" class="label">Estimated Attendance:</label>
+            <input type="text" name="size" id="people">
+        </div>
+        <div>
+            <input type="submit" value="Save" id="saveButton">
+            <input type="submit" value="Cancel" id="cancelButton">
+        </div>
+    </form>
+</div>
+</body>
+</html>

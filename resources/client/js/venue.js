@@ -33,7 +33,8 @@ function pageLoad() {
             venueHTML += `<h1 class="title">${venue.name}</h1>` +
                 `<div class="venueImage"><img src="/client/img/${venue.image}" alt="Picture of ${venue.name}" width="100%" height="500px"></div>` +
                 `<div class="location">${venue.address}, ${venue.city}, ${venue.postcode}</div>` +
-                `<div class="description">${venue.description}</div> <div class="deats">${venue.capacity} ${venue.priceHr}</div>`
+                `<div class="description">${venue.description}</div> <div class="deats">${venue.capacity} ${venue.priceHr}</div>` +
+                `<button >`
 
 
         document.getElementById("listDiv").innerHTML = venueHTML;
