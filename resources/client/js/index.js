@@ -56,7 +56,7 @@ function checkLogin() {
 
     } else {
 
-        logInHTML = "<a class='user' href='#' style='padding: 0px'><li>My Profile</li></a>" +
+        logInHTML = "<a class='user' href='/client/user.html' style='padding: 0px'><li>My Profile</li></a>" +
             "<a class='user' href='/client/login.html?logout'><li>Logout</li></a>";
 
     }

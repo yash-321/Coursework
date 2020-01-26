@@ -17,95 +17,103 @@ function getQueryStringParameters() {
 
 function pageLoad() {
 
+    checkLogin();
+
     let qs = getQueryStringParameters();
-    let id = Number(qs["id"]);
+    let eventID = Number(qs["eventID"]);
+    let venueID = Number(qs["venueID"])
+
+    if (eventID != null) {
+
+        fetch('/event/get/' + eventID, {method: 'get'}
+        ).then(response => response.json()
+        ).then(event => {
+
+            if (event.hasOwnProperty('error')) {
+                alert(event.error);
+            } else {
+
+                document.getElementById("email").value = Cookies.get("email");
+                document.getElementById("eventID").value = eventID;
+                document.getElementById("venueID").value = event.venueID;
+                document.getElementById("catererID").value = event.catererID;
+                document.getElementById("entertainerID").value = event.entertainerID;
+                document.getElementById("date").value = event.date;
+                document.getElementById("hours").value = event.hours;
+                document.getElementById("people").value = event.people;
+                document.getElementById("saveButton").innerText = 'Save';
+
+            }
+        });
+    }
+
+    if (venueID != null) {
+        document.getElementById("email").value = Cookies.get("email")
+        document.getElementById("venueID").value = venueID;
+        document.getElementById("saveButton").innerText = 'Book';
+    }
 
 
-    document.getElementById("saveButton").addEventListener("click", saveEditFruit);
-    document.getElementById("cancelButton").addEventListener("click", cancelEditFruit);
+    document.getElementById("saveButton").addEventListener("click", saveEditEvent);
+    document.getElementById("cancelButton").addEventListener("click", cancelEditEvent);
 
 }
 
+function checkLogin() {
 
-function editFruit(event) {
+    let email = Cookies.get("email");
 
-    const id = event.target.getAttribute("data-id");
+    let logInHTML = '';
 
-    if (id === null) {
+    if (email === undefined) {
 
-        document.getElementById("editHeading").innerHTML = 'Add new fruit:';
-
-        document.getElementById("fruitId").value = '';
-        document.getElementById("fruitName").value = '';
-        document.getElementById("fruitImage").value = '';
-        document.getElementById("fruitColour").value = '';
-        document.getElementById("fruitSize").value = '';
-
-        document.getElementById("listDiv").style.display = 'none';
-        document.getElementById("editDiv").style.display = 'block';
+        alert("Please login to book an event");
+        window.location.href = 'login.html'
 
     } else {
 
-        fetch('/fruit/get/' + id, {method: 'get'}
-        ).then(response => response.json()
-        ).then(fruit => {
-
-            if (fruit.hasOwnProperty('error')) {
-                alert(fruit.error);
-            } else {
-
-                document.getElementById("editHeading").innerHTML = 'Editing ' + fruit.name + ':';
-
-                document.getElementById("fruitId").value = id;
-                document.getElementById("fruitName").value = fruit.name;
-                document.getElementById("fruitImage").value = fruit.image;
-                document.getElementById("fruitColour").value = fruit.colour;
-                document.getElementById("fruitSize").value = fruit.size;
-
-                document.getElementById("listDiv").style.display = 'none';
-                document.getElementById("editDiv").style.display = 'block';
-
-            }
-
-        });
+        logInHTML = "<a class='user' href='/client/user.html' style='padding: 0px'><li>My Profile</li></a>" +
+            "<a class='user' href='/client/login.html?logout'><li>Logout</li></a>";
 
     }
+
+    document.getElementById("loggedInDetails").innerHTML = logInHTML;
 
 }
 
-function saveEditFruit(event) {
+function saveEditEvent(event) {
 
     event.preventDefault();
 
-    if (document.getElementById("fruitName").value.trim() === '') {
-        alert("Please provide a fruit name.");
+    if (document.getElementById("venueID").value.trim() === '') {
+        alert("Please provide the venue ID.");
         return;
     }
 
-    if (document.getElementById("fruitImage").value.trim() === '') {
-        alert("Please provide a fruit image.");
+    if (document.getElementById("date").value.trim() === '') {
+        alert("Please provide a date.");
         return;
     }
 
-    if (document.getElementById("fruitColour").value.trim() === '') {
-        alert("Please provide a fruit colour.");
+    if (document.getElementById("hours").value.trim() === '') {
+        alert("Please provide the number of hours the event will last.");
         return;
     }
 
-    if (document.getElementById("fruitSize").value.trim() === '') {
-        alert("Please provide a fruit size.");
+    if (document.getElementById("people").value.trim() === '') {
+        alert("Please provide the estimated attendance.");
         return;
     }
 
-    const id = document.getElementById("fruitId").value;
-    const form = document.getElementById("fruitForm");
+    const id = document.getElementById("eventID").value;
+    const form = document.getElementById("eventForm");
     const formData = new FormData(form);
 
     let apiPath = '';
     if (id === '') {
-        apiPath = '/fruit/new';
+        apiPath = '/event/new';
     } else {
-        apiPath = '/fruit/update';
+        apiPath = '/event/update';
     }
 
     fetch(apiPath, {method: 'post', body: formData}
@@ -115,19 +123,19 @@ function saveEditFruit(event) {
         if (responseData.hasOwnProperty('error')) {
             alert(responseData.error);
         } else {
-            document.getElementById("listDiv").style.display = 'block';
-            document.getElementById("editDiv").style.display = 'none';
-            pageLoad();
+            if (id === '') {
+                alert("Event booked");
+                window.location.href = 'user.html';
+            } else {
+                alert("Event updated");
+                window.location.href = 'user.html';
+            }
         }
     });
-
 }
 
-function cancelEditFruit(event) {
 
+function cancelEditEvent(event) {
     event.preventDefault();
-
-    window.location.href = '/client/index.html';
-
+    history.go(-1);
 }
-

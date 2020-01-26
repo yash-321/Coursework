@@ -2,8 +2,8 @@
 <html>
 
 <head>
-    <title>User</title>
-    <link rel="stylesheet" type="text/css" href="">
+    <title>Event</title>
+    <link rel="stylesheet" type="text/css" href="/client/css/user.css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,800" rel="stylesheet">
     <script src="/client/js/event.js"></script>
     <script src="/client/js/js.cookie.js"></script>
@@ -37,37 +37,19 @@
     </div>
 </div>
 
-<div id="editDiv">
-    <h2 id="editHeading"></h2>
-    <form id="fruitForm">
-        <input type="hidden" name="id" id="fruitId">
+<div id="content">
+    <form id="eventForm">
+        <h1>Event Booking</h1>
+        <input id="email" name="email" type="hidden"/>
+        <input id="eventID" name="eventID" type="hidden"/>
+        <input id="venueID" name="venueID" type="text" placeholder="Venue" />
+        <input id="catererID" name="catererID" type="text" placeholder="Caterer">
+        <input id="entertainerID" name="entertainerID" type="text" placeholder="Entertainer" />
+        <input id="date" name="date" type="date" placeholder="Date" />
+        <input id="hours" name="hours" type="text" placeholder="Hours" />
+        <input id="people" name="people" type="text" placeholder="Estimated Attendance" />
         <div>
-            <label for="fruitName" class="label">Venue ID:</label>
-            <input type="text" name="name" id="fruitName">
-        </div>
-        <div>
-            <label for="fruitImage" class="label">Caterer ID:</label>
-            <input type="text" name="image" id="fruitImage">
-        </div>
-        <div>
-            <label for="fruitColour" class="label">Entertainer ID:</label>
-            <input type="text" name="colour" id="fruitColour">
-        </div>
-        <div>
-            <label for="fruitSize" class="label">Hours:</label>
-            <input type="text" name="size" id="fruitSize">
-        </div>
-        <div>
-            <label for="date" class="label">Date:</label>
-            <input type="text" name="size" id="date">
-        </div>
-        <div>
-            <label for="people" class="label">Estimated Attendance:</label>
-            <input type="text" name="size" id="people">
-        </div>
-        <div>
-            <input type="submit" value="Save" id="saveButton">
-            <input type="submit" value="Cancel" id="cancelButton">
+            <a id="cancelButton" style="cursor: pointer">cancel</a><button id="saveButton">Book</button>
         </div>
     </form>
 </div>

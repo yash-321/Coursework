@@ -1,10 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>My Profile</title>
+    <link rel="stylesheet" type="text/css" href="/client/css/user.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,800" rel="stylesheet">
+    <script src="/client/js/user.js"></script>
+    <script src="/client/js/js.cookie.js"></script>
+    <link rel="shortcut icon" href="/client/favicon.ico" type="image/x-icon">
 </head>
-<body>
+<STYLE>A {text-decoration: none;} </STYLE>
+<body onload="pageLoad()">
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h1>Contact Us</h1>
+        <a>Email: help@eventplanner.com</a>
+        <br>
+        <a>Phone: 01234 567890</a>
+    </div>
+</div>
+
+<div class="header">
+    <div class="inner_header">
+        <div class="logo_container">
+            <h1 href="">EVENT<span>PLANNER</span></h1>
+        </div>
+
+        <ul class="navigation">
+            <a href="/client/index.html"><li>Home</li></a>
+            <a id="myBtn" style="cursor: pointer"><li>Contact</li></a>
+            <a id="loggedInDetails"></a>
+        </ul>
+    </div>
+</div>
+
+<div id="content">
+    <form id="userForm">
+        <h1>Account Details</h1><a id="deleteUser">delete account</a>
+        <input id="email" name="email" type="hidden"/>
+        <input id="firstname" name="firstname" type="text" placeholder="First Name" />
+        <input id="surname" name="surname" type="text" placeholder="Last Name">
+        <input id="postcode" name="postcode" type="text" placeholder="Postcode" />
+        <div class="Btns">
+            <a id="cancelButton" style="cursor: pointer">cancel</a><button id="saveButton">Save</button>
+        </div>
+    </form>
+
+
+    <div id="events"></div>
+</div>
+
 
 </body>
 </html>
+
+

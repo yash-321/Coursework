@@ -1,0 +1,286 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
+
+
+.header{
+    width: 100%;
+    height: 80px;
+    display: block;
+    background: transparent;
+}
+
+.inner_header{
+    width: 90%;
+    height: 100%;
+    display: block;
+    margin: 0 auto;
+}
+
+.logo_container{
+    height: 100%;
+    display: table;
+    float: left;
+}
+
+.logo_container h1{
+    color: white;
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+    font-family: 'Montserrat';
+    font-size: 32px;
+    font-weight: 200;
+}
+
+.logo_container h1 span{
+    font-weight: 800;
+}
+
+.navigation{
+    float: right;
+    height: 100%;
+    margin: 0px;
+}
+
+.navigation a{
+    height: 100%;
+    display: table;
+    float: left;
+    padding: 0px 20px;
+}
+
+.navigation a:last-child{
+    padding-right: 0px;
+}
+
+.navigation a li{
+    display: table-cell;
+    height: 100%;
+    vertical-align: middle;
+    color: white;
+    font-family: 'Montserrat';
+    font-size: 16px;
+}
+.navigation a:hover {
+    opacity: .50;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: #FF416C;
+    background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);
+    background: linear-gradient(to right, #FF4B2B, #FF416C);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: 'Montserrat', sans-serif;
+    height: 100vh;
+    margin: -10px 0 50px;
+}
+
+h1 {
+    font-weight: bold;
+    margin: 0;
+}
+
+h2 {
+    text-align: center;
+}
+
+p {
+    font-size: 14px;
+    font-weight: 100;
+    line-height: 20px;
+    letter-spacing: 0.5px;
+    margin: 20px 0 30px;
+}
+
+#events {
+    display: block;
+    background: white;
+    margin-bottom: 50px;
+    margin-top: -65px;
+    border-radius: inherit;
+    padding: 20px;
+    box-shadow: 0 30px 30px rgba(0,0,0,0.25),
+    0 10px 10px rgba(0,0,0,0.22);
+}
+
+
+
+button {
+    border-radius: 20px;
+    border: 1px solid #FF4B2B;
+    background-color: #FF4B2B;
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 12px 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: transform 80ms ease-in;
+    cursor: pointer;
+    margin: 5px;
+    display: inline;
+}
+
+#deleteUser {
+    color: #FF4B2B;
+    cursor: pointer;
+}
+
+.Btns {
+    width: 100%;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+button:focus {
+    outline: none;
+}
+
+button.ghost {
+    background-color: transparent;
+    border-color: #FFFFFF;
+}
+
+form {
+    background-color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 35px 200px;
+    height: 100%;
+    text-align: center;
+    border-radius: inherit;
+}
+
+input {
+    background-color: #eee;
+    border: none;
+    padding: 12px 15px;
+    margin: 8px 0;
+    width: 100%;
+}
+
+#content {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25),
+    0 10px 10px rgba(0,0,0,0.22);
+    position: relative;
+    overflow: visible;
+    width: 768px;
+    max-width: 100%;
+}
+
+.form-container {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    transition: all 0.6s ease-in-out;
+}
+
+.sign-in-container {
+    left: 0;
+    width: 50%;
+    z-index: 2;
+}
+
+.containment.right-panel-active .sign-in-container {
+    transform: translateX(100%);
+}
+
+.sign-up-container {
+    left: 0;
+    width: 50%;
+    opacity: 0;
+    z-index: 1;
+}
+
+
+@keyframes show {
+    0%, 49.99% {
+        opacity: 0;
+        z-index: 1;
+    }
+
+    50%, 100% {
+        opacity: 1;
+        z-index: 5;
+    }
+}
+
+
+
+
+
+footer {
+    background-color: #222;
+    color: #fff;
+    font-size: 14px;
+    bottom: 0;
+    position: fixed;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 999;
+}
+
+footer p {
+    margin: 10px 0;
+}
+
+footer i {
+    color: red;
+}
+
+footer a {
+    color: #3c97bf;
+    text-decoration: none;
+}
+
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 30%; /* Could be more or less, depending on screen size */
+    height: 300px;
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}

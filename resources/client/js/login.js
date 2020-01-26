@@ -39,6 +39,7 @@ function login(event) {
             alert(responseData.error);
         } else {
             Cookies.set("firstname", responseData.firstname);
+            Cookies.set("email", responseData.email)
             Cookies.set("token", responseData.token);
 
             window.location.href = '/client/index.html';
@@ -58,6 +59,7 @@ function logout() {
         } else {
 
             Cookies.remove("firstname");
+            Cookies.remove("email");
             Cookies.remove("token");
 
             window.location.href = '/client/index.html';
@@ -86,7 +88,7 @@ function register(event) {
 
             alert("Register Complete! Login to continue!")
 
-            window.location.href = 'client/login.html';
+            window.location.href = 'login.html';
 
         }
     });

@@ -22,45 +22,55 @@ function pageLoad() {
     let qs = getQueryStringParameters();
     let id = Number(qs["id"]);
 
-    alert ("you are looking at venue " + id);
-
     let venueHTML = '';
 
     fetch('/venue/get/' + id, {method: 'get'}
     ).then(response => response.json()
     ).then(venue => {
 
-            venueHTML += `<h1 class="title">${venue.name}</h1>` +
-                `<div class="venueImage"><img src="/client/img/${venue.image}" alt="Picture of ${venue.name}" width="100%" height="500px"></div>` +
+        document.getElementById("bookButton").valueOf()
+
+            venueHTML += `<h1 class="venueName">${venue.name}</h1>` +
+                `<div class="venueImage"><img src="/client/img/${venue.image}" alt="Picture of ${venue.name}" width="100%"></div>` +
                 `<div class="location">${venue.address}, ${venue.city}, ${venue.postcode}</div>` +
-                `<div class="description">${venue.description}</div> <div class="deats">${venue.capacity} ${venue.priceHr}</div>` +
-                `<button >`
+                `<div class="deats"><div class="description">${venue.description}</div> <div class="features">Capacity: ${venue.capacity} Price/hour: ${venue.priceHr}</div></div>`
 
 
-        document.getElementById("listDiv").innerHTML = venueHTML;
+        document.getElementById("listDetails").innerHTML = venueHTML;
 
         checkLogin();
 
     });
 
+
+    const button = document.getElementById("bookButton");
+    button.addEventListener("click", bookEvent);
+    button.myParam = id;
+
 }
 
 function checkLogin() {
 
-    let name = Cookies.get("firstname");
+    let email = Cookies.get("email");
 
     let logInHTML = '';
 
-    if (name === undefined) {
+    if (email === undefined) {
 
         logInHTML = "<a class='signIn' href='/client/login.html'><li>Sign in</li></a>";
 
     } else {
 
-        logInHTML = name + " <a class='signIn' href='/client/login.html?logout'><li>Logout</li></a>";
+        logInHTML = "<a class='user' href='/client/user.html' style='padding: 0px'><li>My Profile</li></a>" +
+            "<a class='user' href='/client/login.html?logout'><li>Logout</li></a>";
 
     }
 
     document.getElementById("loggedInDetails").innerHTML = logInHTML;
 
+}
+
+function bookEvent(event) {
+    let id = event.currentTarget.myParam;
+    window.location.href = 'event.html?venueID=' + id;
 }
